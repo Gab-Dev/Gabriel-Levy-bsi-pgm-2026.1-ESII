@@ -1,119 +1,170 @@
 import datetime
+from dataclasses import dataclass
+from typing import List, Dict
 
-# Variáveis globais acessadas diretamente pela classe
-equipamentos = [
-    {"id": 1, "nome": "Notebook Dell",  "tipo": "notebook", "disponivel": True},
-    {"id": 2, "nome": "Projetor Epson", "tipo": "projetor",  "disponivel": True},
-    {"id": 3, "nome": "Cabo HDMI",      "tipo": "cabo",      "disponivel": True},
-]
-emprestimos_registrados = []
 
+# =========================
+# MODELOS
+# =========================
+
+@dataclass
+class Equipamento:
+    id: int
+    nome: str
+    tipo: str
+    disponivel: bool = True
+
+
+@dataclass
+class Emprestimo:
+    id: int
+    equipamento: Equipamento
+    usuario_nome: str
+    usuario_email: str
+    data_emprestimo: datetime.date
+    data_devolucao: datetime.date
+    devolvido: bool = False
+
+
+# =========================
+# REGRAS DE NEGÓCIO
+# =========================
+
+class CalculadoraMulta:
+    TAXAS = {
+        "notebook": 10.0,
+        "projetor": 15.0,
+        "cabo": 2.0,
+    }
+
+    @classmethod
+    def calcular(cls, tipo: str, dias_atraso: int) -> float:
+        if dias_atraso <= 0:
+            return 0.0
+        taxa = cls.TAXAS.get(tipo, 5.0)  # fallback
+        return dias_atraso * taxa
+
+
+class Notificador:
+    @staticmethod
+    def enviar_email(destinatario: str, mensagem: str):
+        print(f"[EMAIL] {destinatario} — {mensagem}")
+
+
+# =========================
+# SISTEMA
+# =========================
 
 class Sistema:
 
-    def registrar(self, equipamento_id, usuario_nome, usuario_email, dias):
-        equipamento = None
-        for e in equipamentos:           # acessa variável global diretamente
-            if e["id"] == equipamento_id:
-                equipamento = e
-                break
+    def __init__(self, equipamentos: List[Equipamento]):
+        self.equipamentos = equipamentos
+        self.emprestimos: List[Emprestimo] = []
 
-        if equipamento is None or not equipamento["disponivel"]:
+    def buscar_equipamento(self, equipamento_id: int):
+        return next((e for e in self.equipamentos if e.id == equipamento_id), None)
+
+    def buscar_emprestimo(self, emprestimo_id: int):
+        return next((e for e in self.emprestimos if e.id == emprestimo_id), None)
+
+    def registrar(self, equipamento_id, usuario_nome, usuario_email, dias):
+        equipamento = self.buscar_equipamento(equipamento_id)
+
+        if not equipamento or not equipamento.disponivel:
             print("Equipamento inválido ou indisponível")
             return False
 
-        data_emprestimo = datetime.date.today()
-        data_devolucao  = data_emprestimo + datetime.timedelta(days=dias)
+        hoje = datetime.date.today()
+        devolucao = hoje + datetime.timedelta(days=dias)
 
-        emprestimo = {
-            "id":               len(emprestimos_registrados) + 1,
-            "equipamento_id":   equipamento_id,
-            "equipamento_nome": equipamento["nome"],
-            "tipo":             equipamento["tipo"],
-            "usuario_nome":     usuario_nome,
-            "usuario_email":    usuario_email,
-            "data_emprestimo":  data_emprestimo,
-            "data_devolucao":   data_devolucao,
-            "devolvido":        False,
-        }
-        emprestimos_registrados.append(emprestimo)
-        equipamento["disponivel"] = False
+        emprestimo = Emprestimo(
+            id=len(self.emprestimos) + 1,
+            equipamento=equipamento,
+            usuario_nome=usuario_nome,
+            usuario_email=usuario_email,
+            data_emprestimo=hoje,
+            data_devolucao=devolucao
+        )
 
-        # notificação misturada com lógica de negócio
-        print(f"[EMAIL] {usuario_email} — empréstimo até {data_devolucao}")
+        self.emprestimos.append(emprestimo)
+        equipamento.disponivel = False
+
+        Notificador.enviar_email(usuario_email, f"Empréstimo até {devolucao}")
         return True
 
     def devolver(self, emprestimo_id):
-        emprestimo = None
-        for e in emprestimos_registrados:
-            if e["id"] == emprestimo_id:
-                emprestimo = e
-                break
+        emprestimo = self.buscar_emprestimo(emprestimo_id)
 
-        if emprestimo is None or emprestimo["devolvido"]:
+        if not emprestimo or emprestimo.devolvido:
             print("Empréstimo inválido ou já devolvido")
             return
 
-        emprestimo["devolvido"] = True
-        hoje   = datetime.date.today()
-        atraso = (hoje - emprestimo["data_devolucao"]).days
+        emprestimo.devolvido = True
+        emprestimo.equipamento.disponivel = True
 
-        # cálculo de multa com if/elif — violação de OCP
-        multa = 0
-        if atraso > 0:
-            if emprestimo["tipo"] == "notebook":
-                multa = atraso * 10.0
-            elif emprestimo["tipo"] == "projetor":
-                multa = atraso * 15.0
-            elif emprestimo["tipo"] == "cabo":
-                multa = atraso * 2.0
+        hoje = datetime.date.today()
+        atraso = (hoje - emprestimo.data_devolucao).days
 
-        for e in equipamentos:
-            if e["id"] == emprestimo["equipamento_id"]:
-                e["disponivel"] = True
+        multa = CalculadoraMulta.calcular(
+            emprestimo.equipamento.tipo,
+            atraso
+        )
 
-        # notificação misturada aqui também
-        print(f"[EMAIL] {emprestimo['usuario_email']} — multa R${multa:.2f}")
+        Notificador.enviar_email(
+            emprestimo.usuario_email,
+            f"Multa R${multa:.2f}"
+        )
+
         print(f"Devolução registrada. Multa: R${multa:.2f}")
 
     def listar_atrasados(self):
         hoje = datetime.date.today()
-        for e in emprestimos_registrados:
-            if not e["devolvido"] and e["data_devolucao"] < hoje:
-                atraso = (hoje - e["data_devolucao"]).days
 
-                # cálculo de multa duplicado — violação de DRY
-                multa = 0
-                if e["tipo"] == "notebook":
-                    multa = atraso * 10.0
-                elif e["tipo"] == "projetor":
-                    multa = atraso * 15.0
-                elif e["tipo"] == "cabo":
-                    multa = atraso * 2.0
+        for e in self.emprestimos:
+            if not e.devolvido and e.data_devolucao < hoje:
+                atraso = (hoje - e.data_devolucao).days
 
-                print(f"{e['usuario_nome']} — {atraso} dias — R${multa:.2f}")
+                multa = CalculadoraMulta.calcular(
+                    e.equipamento.tipo,
+                    atraso
+                )
 
-                # notificação pela terceira vez no sistema
-                print(f"[EMAIL] {e['usuario_email']} — você está em atraso!")
+                print(f"{e.usuario_nome} — {atraso} dias — R${multa:.2f}")
+
+                Notificador.enviar_email(
+                    e.usuario_email,
+                    "Você está em atraso!"
+                )
 
 
-# menu misturado no mesmo arquivo com a lógica de negócio
+# =========================
+# INTERFACE (MENU)
+# =========================
+
 def main():
-    s = Sistema()
+    equipamentos = [
+        Equipamento(1, "Notebook Dell", "notebook"),
+        Equipamento(2, "Projetor Epson", "projetor"),
+        Equipamento(3, "Cabo HDMI", "cabo"),
+    ]
+
+    sistema = Sistema(equipamentos)
+
     while True:
         print("\n1-Registrar  2-Devolver  3-Atrasados  0-Sair")
         op = input("Opção: ")
+
         if op == "1":
-            s.registrar(
+            sistema.registrar(
                 int(input("ID equipamento: ")),
                 input("Nome: "),
                 input("Email: "),
                 int(input("Dias: "))
             )
         elif op == "2":
-            s.devolver(int(input("ID empréstimo: ")))
+            sistema.devolver(int(input("ID empréstimo: ")))
         elif op == "3":
-            s.listar_atrasados()
+            sistema.listar_atrasados()
         elif op == "0":
             break
 
