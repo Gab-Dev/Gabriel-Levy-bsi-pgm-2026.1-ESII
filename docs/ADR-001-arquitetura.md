@@ -39,3 +39,13 @@ Será utilizada uma arquitetura em camadas, organizada da seguinte forma:
 
 ### Negativas:
 - Estrutura mais complexa para iniciantes
+
+
+## Avaliação dos estilos arquiteturais
+
+| Critério | Arquivo único | Em camadas (MVC) |
+|---------|-------------|------------------|
+| Atende RNF03? | ❌ Não | ✅ Sim |
+| Atende RNF04? | ❌ Não | ✅ Sim |
+| Adequado para CLI? | ✅ Sim | ✅ Sim |
+| Familiar para iniciantes? | ✅ Sim | ⚠️ Médio |
