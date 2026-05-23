@@ -1,16 +1,14 @@
-# ServicoEmprestimo: regras de negócio.
-
-from repositories.repositorio_emprestimo import RepositorioEmprestimo
-from services.notificador import Notificador
 from models.emprestimo import Emprestimo
 
 from datetime import date, timedelta
 
+
 class ServicoEmprestimo:
 
-    def __init__(self):
-        self.repo = RepositorioEmprestimo()
-        self.notificador = Notificador()
+    def __init__(self, repo, notificador):
+
+        self.repo = repo
+        self.notificador = notificador
 
     def registrar(self, equip_id, nome, email, dias):
 
@@ -33,7 +31,10 @@ class ServicoEmprestimo:
         )
 
         self.repo.salvar_emprestimo(emprestimo)
-        self.repo.marcar_indisponivel(equip_id)
+
+        self.repo.marcar_indisponivel(
+            equip_id
+        )
 
         self.notificador.notificar_emprestimo(
             email,
@@ -44,7 +45,9 @@ class ServicoEmprestimo:
 
     def registrar_devolucao(self, emprestimo_id):
 
-        emprestimo = self.repo.buscar_emprestimo(emprestimo_id)
+        emprestimo = self.repo.buscar_emprestimo(
+            emprestimo_id
+        )
 
         if not emprestimo:
             return False
@@ -53,7 +56,9 @@ class ServicoEmprestimo:
             emprestimo.equipamento.id
         )
 
-        self.repo.finalizar_emprestimo(emprestimo_id)
+        self.repo.finalizar_emprestimo(
+            emprestimo_id
+        )
 
         self.notificador.notificar_devolucao(
             emprestimo.email
@@ -69,11 +74,15 @@ class ServicoEmprestimo:
 
     def calcular_multa(self, equip_id, dias_atraso):
 
-        equipamento = self.repo.buscar_equipamento(equip_id)
+        equipamento = self.repo.buscar_equipamento(
+            equip_id
+        )
 
         if not equipamento:
             return None
 
-        multa = equipamento.calcular_multa(dias_atraso)
+        multa = equipamento.calcular_multa(
+            dias_atraso
+        )
 
         return multa

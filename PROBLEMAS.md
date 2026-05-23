@@ -48,3 +48,4 @@ Não é necessário usar termos técnicos neste momento.
 - Existe alto acoplamento devido ao uso de variáveis globais compartilhadas.
 - Não há ocultamento de informação, pois os dados são armazenados em dicionários expostos diretamente.
 - O sistema possui baixa separação de responsabilidades entre interface, lógica e armazenamento.
+

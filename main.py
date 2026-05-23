@@ -1,57 +1,71 @@
 from services.servico_emprestimo import ServicoEmprestimo
+from repositories.repositorio_emprestimo import RepositorioEmprestimo
+from services.notificador import Notificador
 
-servico = ServicoEmprestimo()
 
-while True:
+def main():
 
-    print("\n1 - Registrar empréstimo")
-    print("2 - Registrar devolução")
-    print("3 - Listar atrasados")
-    print("0 - Sair")
+    repo = RepositorioEmprestimo()
+    notificador = Notificador()
 
-    opcao = input("Escolha: ")
+    servico = ServicoEmprestimo(
+        repo,
+        notificador
+    )
 
-    if opcao == "1":
+    while True:
 
-        equip_id = int(input("ID equipamento: "))
-        nome = input("Nome: ")
-        email = input("Email: ")
-        dias = int(input("Dias: "))
+        print("\n1 - Registrar empréstimo")
+        print("2 - Registrar devolução")
+        print("3 - Listar atrasados")
+        print("0 - Sair")
 
-        resultado = servico.registrar(
-            equip_id,
-            nome,
-            email,
-            dias
-        )
+        opcao = input("Escolha: ")
 
-        if resultado:
-            print("Empréstimo registrado.")
-        else:
-            print("Erro ao registrar.")
+        if opcao == "1":
 
-    elif opcao == "2":
+            equip_id = int(input("ID equipamento: "))
+            nome = input("Nome: ")
+            email = input("Email: ")
+            dias = int(input("Dias: "))
 
-        emprestimo_id = int(input("ID empréstimo: "))
-
-        resultado = servico.registrar_devolucao(
-            emprestimo_id
-        )
-
-        if resultado:
-            print("Devolução registrada.")
-        else:
-            print("Erro.")
-
-    elif opcao == "3":
-
-        atrasados = servico.listar_atrasados()
-
-        for emprestimo in atrasados:
-            print(
-                emprestimo.nome_usuario,
-                emprestimo.equipamento.nome
+            resultado = servico.registrar(
+                equip_id,
+                nome,
+                email,
+                dias
             )
 
-    elif opcao == "0":
-        break
+            if resultado:
+                print("Empréstimo registrado.")
+            else:
+                print("Erro ao registrar.")
+
+        elif opcao == "2":
+
+            emprestimo_id = int(input("ID empréstimo: "))
+
+            resultado = servico.registrar_devolucao(
+                emprestimo_id
+            )
+
+            if resultado:
+                print("Devolução registrada.")
+            else:
+                print("Erro.")
+
+        elif opcao == "3":
+
+            atrasados = servico.listar_atrasados()
+
+            for emprestimo in atrasados:
+                print(
+                    emprestimo.nome_usuario,
+                    emprestimo.equipamento.nome
+                )
+
+        elif opcao == "0":
+            break
+
+
+main()
