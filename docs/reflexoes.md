@@ -21,3 +21,13 @@ A aplicação do DIP alterou significativamente a relação de dependência entr
 Com a inversão de dependência, o serviço deixou de controlar a criação desses objetos e passou apenas a utilizá-los. Agora as dependências são fornecidas externamente pelo main.py, tornando o serviço mais flexível e desacoplado.
 Na prática, a mudança não foi apenas técnica, como adicionar parâmetros no construtor, mas também conceitual. O controle da criação dos objetos foi invertido. O ServicoEmprestimo deixou de “mandar” nas dependências e passou a depender apenas das funcionalidades que recebe.
 Segundo Valente, no Capítulo 5 de Engenharia de Software Moderna, a inversão de dependência reduz acoplamento e melhora a testabilidade do sistema. Isso ficou evidente ao permitir a criação de repositórios e notificadores falsos sem necessidade de alterar a lógica principal do serviço.
+
+
+
+## Aula 08 — Testes
+
+O teste de integração consegue validar a comunicação entre múltiplos componentes reais do sistema, como o serviço, o repositório e o notificador. Isso permite detectar problemas de integração que testes unitários isolados normalmente não identificam, como incompatibilidades entre objetos, erros de persistência ou falhas no fluxo completo da aplicação.
+
+Por outro lado, testes de integração possuem menor isolamento e dificultam identificar exatamente qual componente causou uma falha. Já os testes unitários conseguem validar regras específicas de forma mais rápida, simples e previsível, utilizando dublês para controlar dependências externas.
+
+Portanto, testes unitários e de integração possuem objetivos diferentes e complementares. Os unitários garantem precisão no comportamento isolado das unidades, enquanto os de integração validam a colaboração real entre os módulos do sistema.
