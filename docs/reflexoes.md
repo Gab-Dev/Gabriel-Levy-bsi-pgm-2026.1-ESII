@@ -31,3 +31,10 @@ O teste de integração consegue validar a comunicação entre múltiplos compon
 Por outro lado, testes de integração possuem menor isolamento e dificultam identificar exatamente qual componente causou uma falha. Já os testes unitários conseguem validar regras específicas de forma mais rápida, simples e previsível, utilizando dublês para controlar dependências externas.
 
 Portanto, testes unitários e de integração possuem objetivos diferentes e complementares. Os unitários garantem precisão no comportamento isolado das unidades, enquanto os de integração validam a colaboração real entre os módulos do sistema.
+
+
+## Aula 09 — TDD
+
+O TDD e o BDD possuem objetivos parecidos, mas formas diferentes de comunicação. O teste TDD é mais técnico e detalhado, sendo ideal para desenvolvedores verificarem o comportamento do sistema automaticamente. Já o BDD comunica melhor com clientes não técnicos, pois utiliza linguagem próxima da linguagem natural, facilitando o entendimento das regras de negócio.
+
+Eu utilizaria TDD durante o desenvolvimento diário para garantir segurança e qualidade no código. O BDD seria mais útil em reuniões de alinhamento com clientes, analistas e equipe de negócio, pois descreve cenários de maneira mais compreensível para pessoas sem conhecimento técnico.

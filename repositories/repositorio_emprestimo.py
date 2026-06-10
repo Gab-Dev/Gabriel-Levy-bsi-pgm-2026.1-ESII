@@ -1,10 +1,9 @@
 from models.equipamento import (
     Notebook,
-    Projetor,
-    Camera
+    Projetor
 )
 
-from models.emprestimo import Emprestimo
+from datetime import date
 
 
 class RepositorioEmprestimo:
@@ -23,16 +22,11 @@ class RepositorioEmprestimo:
                 2,
                 "Projetor Epson",
                 "projetor"
-            ),
-
-            Camera(
-                3,
-                "Camera Canon",
-                "camera"
             )
         ]
 
         self.emprestimos = []
+
 
     def buscar_equipamento(self, equip_id):
 
@@ -43,23 +37,13 @@ class RepositorioEmprestimo:
 
         return None
 
+
     def salvar_emprestimo(self, emprestimo):
 
-        self.emprestimos.append(emprestimo)
+        self.emprestimos.append(
+            emprestimo
+        )
 
-    def marcar_indisponivel(self, equip_id):
-
-        equipamento = self.buscar_equipamento(equip_id)
-
-        if equipamento:
-            equipamento.disponivel = False
-
-    def marcar_disponivel(self, equip_id):
-
-        equipamento = self.buscar_equipamento(equip_id)
-
-        if equipamento:
-            equipamento.disponivel = True
 
     def buscar_emprestimo(self, emprestimo_id):
 
@@ -70,6 +54,7 @@ class RepositorioEmprestimo:
 
         return None
 
+
     def finalizar_emprestimo(self, emprestimo_id):
 
         emprestimo = self.buscar_emprestimo(
@@ -77,7 +62,42 @@ class RepositorioEmprestimo:
         )
 
         if emprestimo:
-            self.emprestimos.remove(emprestimo)
+            self.emprestimos.remove(
+                emprestimo
+            )
+
+
+    def marcar_indisponivel(self, equip_id):
+
+        equipamento = self.buscar_equipamento(
+            equip_id
+        )
+
+        if equipamento:
+            equipamento.disponivel = False
+
+
+    def marcar_disponivel(self, equip_id):
+
+        equipamento = self.buscar_equipamento(
+            equip_id
+        )
+
+        if equipamento:
+            equipamento.disponivel = True
+
+
+    def contar_emprestimos_abertos(self, email):
+
+        total = 0
+
+        for emprestimo in self.emprestimos:
+
+            if emprestimo.email == email:
+                total += 1
+
+        return total
+
 
     def buscar_atrasados(self):
 
@@ -85,7 +105,10 @@ class RepositorioEmprestimo:
 
         for emprestimo in self.emprestimos:
 
-            if emprestimo.esta_atrasado():
-                atrasados.append(emprestimo)
+            if emprestimo.data_devolucao < date.today():
+
+                atrasados.append(
+                    emprestimo
+                )
 
         return atrasados
