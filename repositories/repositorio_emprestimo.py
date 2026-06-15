@@ -1,9 +1,4 @@
-from models.equipamento import (
-    Notebook,
-    Projetor,
-    Camera
-)
-
+from models.fabrica_equipamento import FabricaEquipamento
 from models.emprestimo import Emprestimo
 
 
@@ -13,22 +8,22 @@ class RepositorioEmprestimo:
 
         self.equipamentos = [
 
-            Notebook(
+            FabricaEquipamento.criar(
+                "notebook",
                 1,
-                "Notebook Dell",
-                "notebook"
+                "Notebook Dell"
             ),
 
-            Projetor(
+            FabricaEquipamento.criar(
+                "projetor",
                 2,
-                "Projetor Epson",
-                "projetor"
+                "Projetor Epson"
             ),
 
-            Camera(
+            FabricaEquipamento.criar(
+                "camera",
                 3,
-                "Camera Canon",
-                "camera"
+                "Camera Canon"
             )
         ]
 
@@ -45,18 +40,24 @@ class RepositorioEmprestimo:
 
     def salvar_emprestimo(self, emprestimo):
 
-        self.emprestimos.append(emprestimo)
+        self.emprestimos.append(
+            emprestimo
+        )
 
     def marcar_indisponivel(self, equip_id):
 
-        equipamento = self.buscar_equipamento(equip_id)
+        equipamento = self.buscar_equipamento(
+            equip_id
+        )
 
         if equipamento:
             equipamento.disponivel = False
 
     def marcar_disponivel(self, equip_id):
 
-        equipamento = self.buscar_equipamento(equip_id)
+        equipamento = self.buscar_equipamento(
+            equip_id
+        )
 
         if equipamento:
             equipamento.disponivel = True
@@ -77,7 +78,9 @@ class RepositorioEmprestimo:
         )
 
         if emprestimo:
-            self.emprestimos.remove(emprestimo)
+            self.emprestimos.remove(
+                emprestimo
+            )
 
     def buscar_atrasados(self):
 
@@ -86,6 +89,8 @@ class RepositorioEmprestimo:
         for emprestimo in self.emprestimos:
 
             if emprestimo.esta_atrasado():
-                atrasados.append(emprestimo)
+                atrasados.append(
+                    emprestimo
+                )
 
         return atrasados
