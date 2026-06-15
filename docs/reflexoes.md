@@ -31,3 +31,12 @@ O teste de integração consegue validar a comunicação entre múltiplos compon
 Por outro lado, testes de integração possuem menor isolamento e dificultam identificar exatamente qual componente causou uma falha. Já os testes unitários conseguem validar regras específicas de forma mais rápida, simples e previsível, utilizando dublês para controlar dependências externas.
 
 Portanto, testes unitários e de integração possuem objetivos diferentes e complementares. Os unitários garantem precisão no comportamento isolado das unidades, enquanto os de integração validam a colaboração real entre os módulos do sistema.
+
+
+## Aula 10 – Factory e Facade
+
+A aplicação do padrão Factory permitiu centralizar a criação dos equipamentos em uma única classe responsável por instanciar os objetos corretos. Isso reduz o acoplamento do repositório com as classes concretas e facilita a inclusão de novos tipos de equipamentos no futuro.
+
+Já o padrão Facade simplificou a utilização do sistema ao fornecer uma interface única para as operações de empréstimo, devolução, listagem de atrasados e cálculo de multas. Com isso, o arquivo principal da aplicação passou a depender apenas da fachada, sem conhecer detalhes internos da implementação.
+
+Esses padrões contribuem para um código mais organizado, com responsabilidades melhor definidas, facilitando manutenção, testes e evolução do sistema.

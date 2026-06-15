@@ -1,17 +1,9 @@
-from services.servico_emprestimo import ServicoEmprestimo
-from repositories.repositorio_emprestimo import RepositorioEmprestimo
-from services.notificador import Notificador
+from app.sistema import SistemaDeEmprestimos
 
 
 def main():
 
-    repo = RepositorioEmprestimo()
-    notificador = Notificador()
-
-    servico = ServicoEmprestimo(
-        repo,
-        notificador
-    )
+    sistema = SistemaDeEmprestimos()
 
     while True:
 
@@ -29,7 +21,7 @@ def main():
             email = input("Email: ")
             dias = int(input("Dias: "))
 
-            resultado = servico.registrar(
+            resultado = sistema.registrar_emprestimo(
                 equip_id,
                 nome,
                 email,
@@ -43,9 +35,11 @@ def main():
 
         elif opcao == "2":
 
-            emprestimo_id = int(input("ID empréstimo: "))
+            emprestimo_id = int(
+                input("ID empréstimo: ")
+            )
 
-            resultado = servico.registrar_devolucao(
+            resultado = sistema.registrar_devolucao(
                 emprestimo_id
             )
 
@@ -56,9 +50,10 @@ def main():
 
         elif opcao == "3":
 
-            atrasados = servico.listar_atrasados()
+            atrasados = sistema.listar_atrasados()
 
             for emprestimo in atrasados:
+
                 print(
                     emprestimo.nome_usuario,
                     emprestimo.equipamento.nome
@@ -68,4 +63,5 @@ def main():
             break
 
 
-main()
+if __name__ == "__main__":
+    main()

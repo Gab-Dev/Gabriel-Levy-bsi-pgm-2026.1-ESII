@@ -1,7 +1,7 @@
 from models.equipamento import (
     Notebook,
     Projetor,
-    Cabo
+    Camera
 )
 
 
@@ -11,14 +11,26 @@ class FabricaEquipamento:
     def criar(tipo, id, nome):
 
         if tipo == "notebook":
-            return Notebook(id, nome, tipo)
+            return Notebook(
+                id,
+                nome,
+                tipo
+            )
 
-        elif tipo == "projetor":
-            return Projetor(id, nome, tipo)
+        if tipo == "projetor":
+            return Projetor(
+                id,
+                nome,
+                tipo
+            )
 
-        elif tipo == "cabo":
-            return Cabo(id, nome, tipo)
+        if tipo == "camera":
+            return Camera(
+                id,
+                nome,
+                tipo
+            )
 
         raise ValueError(
-            f"Tipo desconhecido: {tipo}"
+            f"Tipo inválido: {tipo}"
         )
