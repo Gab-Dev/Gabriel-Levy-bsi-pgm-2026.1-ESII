@@ -9,11 +9,10 @@ class SistemaDeEmprestimos:
 
         repo = RepositorioEmprestimo()
 
-        notificador = Notificador()
+        self.servico = ServicoEmprestimo(repo)
 
-        self.servico = ServicoEmprestimo(
-            repo,
-            notificador
+        self.servico.registrar_observer(
+        Notificador()
         )
 
     def registrar_emprestimo(

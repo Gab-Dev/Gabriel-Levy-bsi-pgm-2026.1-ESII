@@ -1,34 +1,34 @@
 import pytest
 
-from repositories.repositorio_emprestimo import (
-    RepositorioEmprestimo
-)
+from repositories.repositorio_emprestimo import RepositorioEmprestimo
+from services.observer import Observer
+from services.servico_emprestimo import ServicoEmprestimo
 
-from services.notificador import Notificador
-from services.servico_emprestimo import (
-    ServicoEmprestimo
-)
+
+class NotificadorSpy(Observer):
+
+    def __init__(self):
+        self.eventos = []
+
+    def update(self, evento):
+        self.eventos.append(evento)
 
 
 @pytest.fixture
 def repositorio_fake():
-
     return RepositorioEmprestimo()
 
 
 @pytest.fixture
 def notificador_fake():
-
-    return Notificador()
+    return NotificadorSpy()
 
 
 @pytest.fixture
-def servico(
-    repositorio_fake,
-    notificador_fake
-):
+def servico(repositorio_fake, notificador_fake):
 
-    return ServicoEmprestimo(
-        repositorio_fake,
-        notificador_fake
-    )
+    servico = ServicoEmprestimo(repositorio_fake)
+
+    servico.registrar_observer(notificador_fake)
+
+    return servico

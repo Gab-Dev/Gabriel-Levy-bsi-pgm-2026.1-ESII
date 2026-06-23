@@ -1,13 +1,24 @@
-# Notificador: enviar notificações.
+from services.observer import Observer
 
-class Notificador:
 
-    def notificar_emprestimo(self, email, data_devolucao):
-        print(f"[EMAIL] Empréstimo registrado para {email}.")
-        print(f"Devolução até: {data_devolucao}")
+class Notificador(Observer):
 
-    def notificar_devolucao(self, email):
-        print(f"[EMAIL] Devolução registrada para {email}.")
+    def update(self, evento):
 
-    def notificar_atraso(self, email):
-        print(f"[EMAIL] Empréstimo em atraso para {email}.")
+        if evento["tipo"] == "emprestimo":
+            print(
+                f"[EMAIL] Empréstimo registrado para {evento['email']}."
+            )
+            print(
+                f"Devolução até: {evento['data_devolucao']}"
+            )
+
+        elif evento["tipo"] == "devolucao":
+            print(
+                f"[EMAIL] Devolução registrada para {evento['email']}."
+            )
+
+        elif evento["tipo"] == "atraso":
+            print(
+                f"[EMAIL] Empréstimo em atraso para {evento['email']}."
+            )

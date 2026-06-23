@@ -40,3 +40,12 @@ A aplicação do padrão Factory permitiu centralizar a criação dos equipament
 Já o padrão Facade simplificou a utilização do sistema ao fornecer uma interface única para as operações de empréstimo, devolução, listagem de atrasados e cálculo de multas. Com isso, o arquivo principal da aplicação passou a depender apenas da fachada, sem conhecer detalhes internos da implementação.
 
 Esses padrões contribuem para um código mais organizado, com responsabilidades melhor definidas, facilitando manutenção, testes e evolução do sistema.
+
+
+## Aula 11 - Decorator e Observer
+
+Durante esta atividade foi possível perceber na prática como os padrões de projeto ajudam a melhorar a organização do código. No padrão Decorator, a principal vantagem foi conseguir adicionar novas funcionalidades aos equipamentos, como seguro e rastreador, sem precisar alterar as classes existentes. Isso torna o sistema mais flexível, já que novas funcionalidades podem ser adicionadas futuramente de forma simples.
+
+Já no padrão Observer, a principal mudança foi retirar a responsabilidade de notificação do serviço de empréstimos. Antes ele chamava diretamente o notificador, ficando dependente dessa classe. Com o Observer, o serviço apenas dispara um evento e qualquer classe registrada como observadora pode receber essa informação. Isso deixa o código menos acoplado e facilita a inclusão de novos tipos de notificações no futuro, como envio de SMS ou mensagens por aplicativo.
+
+Na minha opinião, o maior desafio foi entender como os eventos seriam enviados para os observers e adaptar o código que já existia sem quebrar os testes. Depois de implementar e executar os testes, ficou mais fácil compreender o funcionamento desses padrões e perceber como eles tornam o sistema mais organizado, reutilizável e fácil de manter.
