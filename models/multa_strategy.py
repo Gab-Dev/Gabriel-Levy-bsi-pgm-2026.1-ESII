@@ -14,4 +14,4 @@ class MultaPorDia(MultaStrategy):
         self.valor_dia = valor_dia
 
     def calcular(self, dias_atraso: int) -> float:
-        return max(0.0, dias_atraso * self.valor_dia)
+        return max(0, dias_atraso * self.valor_dia)

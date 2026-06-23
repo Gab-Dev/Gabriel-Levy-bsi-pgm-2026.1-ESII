@@ -4,6 +4,10 @@ from models.equipamento import (
     Camera
 )
 
+from models.multa_strategy import (
+    MultaPorDia
+)
+
 
 class FabricaEquipamento:
 
@@ -14,21 +18,24 @@ class FabricaEquipamento:
             return Notebook(
                 id,
                 nome,
-                tipo
+                tipo,
+                MultaPorDia(10)
             )
 
         if tipo == "projetor":
             return Projetor(
                 id,
                 nome,
-                tipo
+                tipo,
+                MultaPorDia(5)
             )
 
         if tipo == "camera":
             return Camera(
                 id,
                 nome,
-                tipo
+                tipo,
+                MultaPorDia(7)
             )
 
         raise ValueError(

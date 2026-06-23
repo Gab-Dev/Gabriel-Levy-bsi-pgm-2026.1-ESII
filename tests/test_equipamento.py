@@ -1,30 +1,35 @@
 import pytest
 
-from models.equipamento import (
-    Notebook,
-    Projetor,
-    Camera
+from models.fabrica_equipamento import (
+    FabricaEquipamento
 )
 
 
 @pytest.mark.parametrize(
-    "equipamento,dias,esperado",
+    "tipo,nome,dias,esperado",
     [
-        (Notebook(1, "Dell", "notebook"), 2, 20),
-        (Notebook(1, "Dell", "notebook"), 5, 50),
+        ("notebook", "Dell", 2, 20),
+        ("notebook", "Dell", 5, 50),
 
-        (Projetor(2, "Epson", "projetor"), 2, 10),
-        (Projetor(2, "Epson", "projetor"), 5, 25),
+        ("projetor", "Epson", 2, 10),
+        ("projetor", "Epson", 5, 25),
 
-        (Camera(3, "Canon", "camera"), 2, 14),
-        (Camera(3, "Canon", "camera"), 5, 35),
+        ("camera", "Canon", 2, 14),
+        ("camera", "Canon", 5, 35),
     ]
 )
 def test_calcular_multa_atraso_positivo(
-    equipamento,
+    tipo,
+    nome,
     dias,
     esperado
 ):
+
+    equipamento = FabricaEquipamento.criar(
+        tipo,
+        1,
+        nome
+    )
 
     assert (
         equipamento.calcular_multa(dias)
@@ -33,15 +38,25 @@ def test_calcular_multa_atraso_positivo(
 
 
 @pytest.mark.parametrize(
-    "equipamento",
+    "tipo,nome",
     [
-        Notebook(1, "Dell", "notebook"),
-        Projetor(2, "Epson", "projetor"),
-        Camera(3, "Canon", "camera"),
+        ("notebook", "Dell"),
+        ("projetor", "Epson"),
+        ("camera", "Canon"),
     ]
 )
 def test_calcular_multa_atraso_negativo_retorna_zero(
-    equipamento
+    tipo,
+    nome
 ):
 
-    assert equipamento.calcular_multa(-5) == 0
+    equipamento = FabricaEquipamento.criar(
+        tipo,
+        1,
+        nome
+    )
+
+    assert (
+        equipamento.calcular_multa(-5)
+        == 0
+    )

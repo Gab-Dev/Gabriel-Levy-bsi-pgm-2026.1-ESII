@@ -13,7 +13,10 @@ class Equipamento:
     disponivel: bool = True
 
     def calcular_multa(self, dias_atraso):
-        return self.multa.calcular(dias_atraso)
+
+        return self.multa.calcular(
+            dias_atraso
+        )
 
 
 @dataclass
